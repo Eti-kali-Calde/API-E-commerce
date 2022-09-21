@@ -1,6 +1,7 @@
 package main
 
 import (
+	"API-E-commerce/server"
 	"database/sql"
 	"fmt"
 
@@ -9,7 +10,7 @@ import (
 
 func main() {
 	//iniciando el servidor
-	//server.Server()
+	server.Server()
 	//conectando a la base de datos
 	var db *sql.DB = connectDB()
 
@@ -37,32 +38,6 @@ func main() {
 	} else if firstOption == "3" {
 		fmt.Println("eligio la opcion 3")
 	}
-
-	type Cliente struct {
-		Id       int
-		Name     string
-		Password string
-	}
-
-	type Compra struct {
-		Id_Compra  int
-		Id_Cliente int
-	}
-
-	type Detalle struct {
-		Id_Compra   int
-		Id_Producto int
-		Cantidad    int
-		fecha       string
-	}
-
-	type Producto struct {
-		Id_Producto         int
-		Nombre              string
-		Cantidad_Disponible int
-		Precio_Unitario     int
-	}
-
 	fmt.Print(db)
 }
 
