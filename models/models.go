@@ -94,8 +94,22 @@ func Addproduct(product Producto) {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	defer insert.Close()
+
 }
+
+func GetIdByName(name string) int {
+	var id int
+	allProducts := GetProduct()
+	for _, Producto := range allProducts {
+		if Producto.Nombre == name {
+			id = Producto.Id_Producto
+		}
+	}
+	return id
+}
+
 func Addcompra(compra Compra) {
 	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
 	if err != nil {
@@ -135,6 +149,7 @@ func Delete(id string) {
 	}
 	defer delete.Close()
 }
+
 func Putproduct(product Producto) {
 	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
 	if err != nil {
@@ -142,9 +157,16 @@ func Putproduct(product Producto) {
 	}
 
 	defer db.Close()
-	insert, err := db.Query("UPDATE producto SET (nombre,cantidad_disponible,precio_unitario) VALUES (?,?,?) WHERE id_producto = ?", product.Nombre, product.Cantidad_Disponible, product.Precio_Unitario, product.Id_Producto)
+	insert, err := db.Query("UPDATE producto SET nombre=?, cantidad_disponible=?, precio_unitario=? WHERE id_producto = ?;", product.Nombre, product.Cantidad_Disponible, product.Precio_Unitario, product.Id_Producto)
 	if err != nil {
 		panic(err.Error())
 	}
 	defer insert.Close()
+}
+
+//si el usuario existe y puso bien la contrasena retorna true
+//si el usuario existe y puso mal la contrasena retorna false
+//si el usuario NO existe y lo puede crear retorna true
+func ValidateLogin(client Cliente) {
+	//TODO
 }

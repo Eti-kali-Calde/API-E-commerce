@@ -4,9 +4,18 @@ import (
 	"API-E-commerce/models"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+type ID_Producto struct {
+	Id_Producto int `json:"id_Producto"`
+}
+
+type Inicio_Sesion struct {
+	Acceso_Valido bool `json:"acceso_valido"`
+}
 
 func Server() {
 	fmt.Print("Bienvenido \n")
@@ -28,13 +37,20 @@ func initServer() {
 }
 
 func postLogin(c *gin.Context) {
+	var client models.Cliente
+	var acces Inicio_Sesion
+	if err := c.BindJSON(&client); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+	} else {
+
+	}
 	fmt.Print("Loegado\n")
 }
 
 func postCompra(c *gin.Context) {
 	var det models.Detalle
 	var comp models.Compra
-	if err := c.BindJSON(&comp, &det); err != nil {
+	if err := c.BindJSON(&comp); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		models.Addcompra(comp)
@@ -45,11 +61,13 @@ func postCompra(c *gin.Context) {
 
 func postProduct(c *gin.Context) {
 	var prod models.Producto
+	var id_prod ID_Producto
 	if err := c.BindJSON(&prod); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		models.Addproduct(prod)
-		c.IndentedJSON(http.StatusCreated, prod)
+		id_prod.Id_Producto = models.GetIdByName(prod.Nombre)
+		c.IndentedJSON(http.StatusCreated, id_prod)
 	}
 }
 
@@ -73,6 +91,7 @@ func getProductByID(c *gin.Context) {
 }
 
 func delProductByID(c *gin.Context) {
+	var id_prod ID_Producto
 	id := c.Param("id")
 	product := models.GetProductbyid(id)
 	if product == nil {
@@ -80,7 +99,14 @@ func delProductByID(c *gin.Context) {
 
 	} else {
 		models.Delete(id)
-		c.IndentedJSON(http.StatusOK, product)
+		var err error
+		id_prod.Id_Producto, err = strconv.Atoi(id)
+		if err != nil {
+			fmt.Println("Error during conversion")
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, id_prod)
 	}
 }
 
@@ -90,10 +116,20 @@ func getStatistics(c *gin.Context) {
 
 func putProductByID(c *gin.Context) {
 	var prod models.Producto
+
 	if err := c.BindJSON(&prod); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
+		var id_prod ID_Producto
+		id_str := c.Param("id")
+		id_int, err := strconv.Atoi(id_str)
+		if err != nil {
+			fmt.Println("Error during conversion")
+			return
+		}
+		id_prod.Id_Producto = id_int
+		prod.Id_Producto = id_int
 		models.Putproduct(prod)
-		c.IndentedJSON(http.StatusCreated, prod)
+		c.IndentedJSON(http.StatusCreated, id_prod)
 	}
 }
