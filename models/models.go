@@ -63,7 +63,7 @@ func GetProductbyid(id string) *Producto {
 		return nil
 	}
 	defer db.Close()
-	results, err := db.Query("SELECT * FROM producto where id_producto=?", id)
+	results, err := db.Query("SELECT * FROM producto WHERE id_producto=?", id)
 
 	if err != nil {
 		fmt.Println("Err", err.Error())
@@ -104,6 +104,45 @@ func Addcompra(compra Compra) {
 
 	defer db.Close()
 	insert, err := db.Query("INSERT INTO compra(id_cliente) VALUES (?)", compra.Id_Cliente)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer insert.Close()
+}
+func Adddetalle(detalle Detalle) {
+	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer db.Close()
+	insert, err := db.Query("INSERT INTO detalle(id_compra, id_producto, cantida, fecha) VALUES (?)", detalle.Id_Compra, detalle.Id_Producto, detalle.Cantidad, detalle.Fecha)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer insert.Close()
+}
+func Delete(id string) {
+	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer db.Close()
+	delete, err := db.Query("DELETE FROM producto WHERE id_producto = ?", id)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer delete.Close()
+}
+func Putproduct(product Producto) {
+	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer db.Close()
+	insert, err := db.Query("UPDATE producto SET (nombre,cantidad_disponible,precio_unitario) VALUES (?,?,?) WHERE id_producto = ?", product.Nombre, product.Cantidad_Disponible, product.Precio_Unitario, product.Id_Producto)
 	if err != nil {
 		panic(err.Error())
 	}
