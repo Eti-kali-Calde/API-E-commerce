@@ -18,11 +18,6 @@ type Inicio_Sesion struct {
 }
 
 func Server() {
-	fmt.Print("Bienvenido \n")
-	initServer()
-}
-
-func initServer() {
 	router := gin.Default()
 	//router.POST("/api/clientes/iniciar_sesion", postLogin)
 	router.POST("/api/compras", postCompra)
@@ -38,7 +33,7 @@ func initServer() {
 
 func postLogin(c *gin.Context) {
 	var client models.Cliente
-	var acces Inicio_Sesion
+	//var acces Inicio_Sesion
 	if err := c.BindJSON(&client); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {

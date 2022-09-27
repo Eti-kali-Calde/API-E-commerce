@@ -3,14 +3,19 @@ package main
 import (
 	"API-E-commerce/server"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	//iniciando el servidor
-	server.Server()
+	go server.Server()
+	time.Sleep(500 * time.Millisecond)
+	terminalInterface()
+}
 
+func terminalInterface() {
+	fmt.Print("Bienvenido \n")
 	fmt.Println("Opciones:")
 	fmt.Println("1. Iniciar sesión como cliente")
 	fmt.Println("2. Iniciar sesión como administrador")
@@ -35,5 +40,4 @@ func main() {
 	} else if firstOption == "3" {
 		fmt.Println("eligio la opcion 3")
 	}
-	fmt.Print(db)
 }
