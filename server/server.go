@@ -19,7 +19,7 @@ type Inicio_Sesion struct {
 
 func Server() {
 	router := gin.Default()
-	//router.POST("/api/clientes/iniciar_sesion", postLogin)
+	router.POST("/api/clientes/iniciar_sesion", postLogin)
 	router.POST("/api/compras", postCompra)
 	router.POST("/api/productos", postProduct)
 	router.GET("/api/productos", getProduct)
@@ -32,14 +32,13 @@ func Server() {
 }
 
 func postLogin(c *gin.Context) {
-	var client models.Cliente
-	//var acces Inicio_Sesion
-	if err := c.BindJSON(&client); err != nil {
+	var user models.Cliente
+	if err := c.BindJSON(&user); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
-
+		models.Login(user)
+		c.IndentedJSON(http.StatusCreated, user)
 	}
-	fmt.Print("Loegado\n")
 }
 
 func postCompra(c *gin.Context) {

@@ -164,9 +164,16 @@ func Putproduct(product Producto) {
 	defer insert.Close()
 }
 
-//si el usuario existe y puso bien la contrasena retorna true
-//si el usuario existe y puso mal la contrasena retorna false
-//si el usuario NO existe y lo puede crear retorna true
-func ValidateLogin(client Cliente) {
-	//TODO
+func Login(user Cliente) bool {
+	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	validate, err := db.Query("SELECT * FROM cliente WHERE id_cliente = ? AND contraseña = ?", user.Id, user.Password)
+	if err != nil || !validate.Next() {
+		return false
+	}
+	return true
+
 }
