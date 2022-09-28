@@ -40,7 +40,7 @@ func terminalInterface() {
 	fmt.Print("Ingrese una opción: ")
 	fmt.Scan(&firstOption)
 
-	if firstOption == "1" {
+	if firstOption == "1" { //iniciar como cliente
 		var userId int
 		var userPass string
 		fmt.Print("Ingrese su id: ")
@@ -52,36 +52,40 @@ func terminalInterface() {
 		resp, err := http.Post("http://localhost:5000/api/clientes/iniciar_sesion", "application/json; charset=utf-8", bytes.NewBuffer(jsonReq))
 		if err != nil {
 			fmt.Print("Error, no hay ninguna coincidencia con los datos ingresados.")
-
 		}
-		defer resp.Body.Close()
-		fmt.Println("Inicio de sesión exitoso")
-		fmt.Println("Opciones:")
-		fmt.Println("1. Ver lista de productos")
-		fmt.Println("2. Hacer compra")
-		fmt.Println("3. Salir")
-		var secondOption string
-		fmt.Print("Ingrese una opción: ")
-		fmt.Scan(&secondOption)
-		if secondOption == "1" {
-			resp, err := http.Get("http://localhost:5000/api/productos")
-			if err != nil {
-				log.Fatalln(err)
+		aux, _ := ioutil.ReadAll(resp.Body)
+		userExist := string(aux)
+		if userExist == "" {
+			fmt.Print("Error, no hay ninguna coincidencia con los datos ingresados.")
+		} else {
+			fmt.Println("Inicio de sesión exitoso")
+			fmt.Println("Opciones:")
+			fmt.Println("1. Ver lista de productos")
+			fmt.Println("2. Hacer compra")
+			fmt.Println("3. Salir")
+			var secondOption string
+			fmt.Print("Ingrese una opción: ")
+			fmt.Scan(&secondOption)
+			if secondOption == "1" { //ver producto
+				resp, err := http.Get("http://localhost:5000/api/productos")
+				if err != nil {
+					log.Fatalln(err)
+				}
+
+				defer resp.Body.Close()
+				bodyBytes, _ := ioutil.ReadAll(resp.Body)
+
+				// Convert response body to string
+				bodyString := string(bodyBytes)
+				fmt.Println("API Response as String:\n" + bodyString)
+			} else if secondOption == "2" { //hacer compras
+
+			} else if secondOption == "3" { //salir
+				fmt.Print("Hasta luego!")
 			}
-
-			defer resp.Body.Close()
-			bodyBytes, _ := ioutil.ReadAll(resp.Body)
-
-			// Convert response body to string
-			bodyString := string(bodyBytes)
-			fmt.Println("API Response as String:\n" + bodyString)
-		} else if secondOption == "2" {
-
-		} else if secondOption == "3" {
-			fmt.Print("Hasta luego!")
 		}
 
-	} else if firstOption == "2" {
+	} else if firstOption == "2" { //iniciar como admin
 		var adminPass string
 		fmt.Println("Ingrese contraseña de administrador: ")
 		fmt.Scan(&adminPass)

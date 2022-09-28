@@ -36,8 +36,13 @@ func postLogin(c *gin.Context) {
 	if err := c.BindJSON(&user); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
-		models.Login(user)
-		c.IndentedJSON(http.StatusCreated, user)
+		userExist := models.Login(user)
+
+		if userExist == nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+		} else {
+			c.IndentedJSON(http.StatusCreated, userExist)
+		}
 	}
 }
 

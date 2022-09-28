@@ -164,16 +164,27 @@ func Putproduct(product Producto) {
 	defer insert.Close()
 }
 
-func Login(user Cliente) bool {
+func Login(user Cliente) *Cliente {
 	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/tarea_1_sd")
+	returnUser := &Cliente{}
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
-	validate, err := db.Query("SELECT * FROM cliente WHERE id_cliente = ? AND contraseña = ?", user.Id, user.Password)
-	if err != nil || !validate.Next() {
-		return false
+	validate, err := db.Query("SELECT * FROM cliente WHERE id_cliente = ? AND contrasena = ?", user.Id, user.Password)
+	if err != nil {
+		fmt.Println("Err", err.Error())
+		return nil
 	}
-	return true
 
+	if validate.Next() {
+		err = validate.Scan(&returnUser.Id, &returnUser.Name, &returnUser.Password)
+		if err != nil {
+			return nil
+		}
+	} else {
+		return nil
+	}
+
+	return returnUser
 }
