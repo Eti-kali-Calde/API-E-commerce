@@ -1,2 +1,2 @@
 # API-E-commerce
-Tarea-1 para el ramo de Sistemas Distribuidos
+The aim of the project is to learn about distributed systems
